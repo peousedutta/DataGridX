@@ -37,7 +37,7 @@
         </thead>
         <tbody>
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
-          v-for="(product, index) in productList[0]">
+          v-for="(product, index) in productList[pageIndex]">
             <td class="px-6 py-4">
               {{ product.sku }}
             </td>
@@ -69,14 +69,16 @@
 
         </tbody>
       </table>
-      <NavBar />
+      <NavBar 
+        :dataStreamLength = "dataStreamLength" 
+        @pageIndex="getPageIndex"
+      />
     </div>
 
   </div>
 </template>
 
 <script>
-import { data } from 'autoprefixer';
 import NavBar from './components/NavBar.vue';
 export default{
   components : {
@@ -84,12 +86,16 @@ export default{
   },
   mounted(){
     this.getAllProductsData().then(data =>{
-      this.productList = data;
-      console.log(this.productList);
+      this.productList = data
+      this.dataStreamLength = this.productList.length
+      console.log(this.dataStreamLength);
+      
     })
   },
   data(){
     return{
+      pageIndex: null,
+      dataStreamLength : null,
       data : [],
       productList : []
     }
@@ -98,6 +104,8 @@ export default{
     async getAllProductsData(){
       try {
         const res = await fetch('https://dummyjson.com/products')
+        console.log(res);
+        
         const data = await res.json()
         console.log(data.products);
         let result = this.chunkArray(data.products)
@@ -109,29 +117,16 @@ export default{
     async chunkArray(products) {
       let result = [];
       for (let i = 0; i < products.length; i += 5) {
-          result.push(products.slice(i, i + 5));
+          result.push(products.slice(i, i + 5))
       }
-      console.log(result);
-      return result;
+      console.log(result)
+      return result
+    },
+    getPageIndex(index){
+      console.log(index)
+      this.pageIndex = index
     }
   }
 }
 </script>
 
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
