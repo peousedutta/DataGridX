@@ -44,7 +44,7 @@
             <td class="px-6 py-4">
               {{ product.brand }}
             </td>
-            <td class="px-6 py-4">
+            <td class="px-6 py-4 h-24">
               {{ product.description }}
             </td>
             <td class="px-6 py-4">
@@ -89,13 +89,12 @@ export default{
       this.productList = data
       this.dataStreamLength = this.productList.length
       console.log(this.dataStreamLength);
-      
     })
   },
   data(){
     return{
       pageIndex: null,
-      dataStreamLength : null,
+      dataStreamLength : 1,
       data : [],
       productList : []
     }
